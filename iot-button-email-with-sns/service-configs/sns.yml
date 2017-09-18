@@ -1,0 +1,28 @@
+ButtonSNSTopic:
+  Type: AWS::SNS::Topic
+  Properties:
+    DisplayName: AWS IoT Button Press Notification
+    Subscription:
+    - Endpoint: ${self:custom.vars.EmailAddress}
+      Protocol: email
+    #var
+    TopicName: SNSButtonEmail
+
+
+ButtonSNSTopicRole:
+  Type: AWS::IAM::Role
+  Properties:
+    AssumeRolePolicyDocument:
+      Statement:
+      - Effect: Allow
+        Principal:
+          Service: iot.amazonaws.com
+        Action: sts:AssumeRole
+    Policies:
+    - PolicyDocument:
+        Statement:
+        - Effect: Allow
+          Action: sns:Publish
+          Resource: {Ref: ButtonSNSTopic}
+      #var
+      PolicyName: SNSButtonEmailRole

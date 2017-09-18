@@ -1,0 +1,35 @@
+service: iot-buttons-dynamo
+
+
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  variableSyntax: "\\${{([ ~:a-zA-Z0-9._\\'\",\\-\\/\\(\\)]+?)}}"
+
+
+
+plugins:
+  - serverless-webpack
+  - serverless-offline
+
+custom:
+  webpackIncludeModules: true
+  stage: ${{opt:stage, self:provider.stage}}
+  vars: ${{file(service-configs/vars.yml)}}
+
+functions:
+  echo:
+    handler: index.echo
+
+resources:
+  Resources:
+    # IoT
+    Button: ${{file(service-configs/iot.yml):Button}}
+    ButtonAttachment: ${{file(service-configs/iot.yml):ButtonAttachment}}
+    ButtonPolicy: ${{file(service-configs/iot.yml):ButtonPolicy}}
+    ButtonPolicyAttachment: ${{file(service-configs/iot.yml):ButtonPolicyAttachment}}
+    ButtonTopicRule: ${{file(service-configs/iot.yml):ButtonTopicRule}}
+    # DynamoDB
+    MessageDB: ${{file(service-configs/dynamodb.yml):MessageDB}}
+    MessageDBRole: ${{file(service-configs/dynamodb.yml):MessageDBRole}}

@@ -1,0 +1,24 @@
+IoTRole:
+  Type: AWS::IAM::Role
+  Properties:
+    RoleName: iot-example
+    AssumeRolePolicyDocument:
+      Statement:
+        -
+          Effect: Allow
+          Principal:
+            AWS: "*"
+          Action: sts:AssumeRole
+    Policies:
+      -
+        PolicyName: iot-example
+        PolicyDocument:
+          Statement:
+            -
+              Effect: Allow
+              Action:
+                - iot:Connect
+                - iot:Subscribe
+                - iot:Publish
+                - iot:Receive
+              Resource: "*"

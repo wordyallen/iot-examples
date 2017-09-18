@@ -1,0 +1,38 @@
+MessageDB:
+  Type: "AWS::DynamoDB::Table"
+  Properties:
+    AttributeDefinitions:
+      - AttributeName: SerialNumber
+        AttributeType: S
+      - AttributeName: ClickType
+        AttributeType: S
+    KeySchema:
+      - AttributeName: SerialNumber
+        KeyType: HASH
+      - AttributeName: ClickType
+        KeyType: RANGE
+    ProvisionedThroughput:
+      ReadCapacityUnits: 1
+      WriteCapacityUnits: 1
+    # var
+    TableName: IotButtonTable
+
+MessageDBRole:
+  Type: AWS::IAM::Role
+  Properties:
+    AssumeRolePolicyDocument:
+      Statement:
+        - Effect: Allow
+          Principal:
+            Service: iot.amazonaws.com
+          Action: sts:AssumeRole
+    Policies:
+      - PolicyName: DynamoInsertMessage
+        PolicyDocument:
+          Statement:
+            - Effect: Allow
+              Action: dynamodb:PutItem
+              Resource:
+                Fn::GetAtt:
+                  - MessageDB
+                  - Arn

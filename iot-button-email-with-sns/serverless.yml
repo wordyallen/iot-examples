@@ -1,0 +1,31 @@
+service: iot-buttons-sns
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+
+plugins:
+  - serverless-webpack
+  - serverless-offline
+
+custom:
+  webpackIncludeModules: true
+  stage: ${opt:stage, self:provider.stage}
+  vars: ${file(service-configs/vars.yml)}
+
+functions:
+  echo:
+    handler: index.echo
+
+resources:
+  Resources:
+    # IoT
+    Button: ${file(service-configs/iot.yml):Button}
+    ButtonAttachment: ${file(service-configs/iot.yml):ButtonAttachment}
+
+    ButtonPolicy: ${file(service-configs/iot.yml):ButtonPolicy}
+    ButtonPolicyAttachment: ${file(service-configs/iot.yml):ButtonPolicyAttachment}
+
+    ButtonTopicRule: ${file(service-configs/iot.yml):ButtonTopicRule}
+    ButtonSNSTopic: ${file(service-configs/sns.yml):ButtonSNSTopic}
+    ButtonSNSTopicRole: ${file(service-configs/sns.yml):ButtonSNSTopicRole}

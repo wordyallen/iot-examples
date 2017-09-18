@@ -1,0 +1,53 @@
+Button:
+  Type: AWS::IoT::Thing
+  Properties:
+    ThingName: iotbutton_${self:custom.vars.ButtonDSN}
+ButtonAttachment:
+  Type: AWS::IoT::ThingPrincipalAttachment
+  Properties:
+    Principal: ${self:custom.vars.CertificateARN}
+    ThingName:
+      Ref: Button
+
+
+ButtonPolicy:
+  Type: AWS::IoT::Policy
+  Properties:
+    PolicyDocument:
+      Version: '2012-10-17'
+      Statement:
+      - Action: iot:Publish
+        Effect: Allow
+        Resource:
+          Fn::Join:
+          - ''
+          - - 'arn:aws:iot:'
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - :topic/iotbutton/${self:custom.vars.ButtonDSN}
+
+ButtonPolicyAttachment:
+  Type: AWS::IoT::PolicyPrincipalAttachment
+  Properties:
+    PolicyName:
+      Ref: ButtonPolicy
+    Principal: ${self:custom.vars.CertificateARN}
+
+
+ButtonTopicRule:
+  Type: AWS::IoT::TopicRule
+  Properties:
+    RuleName: SendEmailThroughSNS
+    TopicRulePayload:
+      AwsIotSqlVersion: '2015-10-08'
+      RuleDisabled: false
+      Sql: >-
+        SELECT *, topic(3) as thing FROM '$aws/things/+/shadow/update/accepted'
+      Actions:
+      - Sns:
+          RoleArn:
+            Fn::GetAtt:
+              - ButtonSNSTopicRole
+              - Arn
+          TargetArn: {Ref: ButtonSNSTopic}

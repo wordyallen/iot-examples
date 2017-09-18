@@ -1,0 +1,37 @@
+service: iot-example
+
+provider :
+  name: aws
+  runtime: nodejs6.10
+  region: us-east-2
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - 'iot:DescribeEndpoint'
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - 'sts:AssumeRole'
+      Resource: "*"
+
+custom:
+  webpackIncludeModules: true
+  stage: ${opt:stage, self:provider.stage}
+
+
+plugins:
+  - serverless-webpack
+  - serverless-offline
+
+
+functions:
+  auth:
+    handler: iot-services/index.auth
+    events:
+      - http:
+          path: /iot-keys
+          method: get
+
+resources:
+  Resources:
+    IoTRole: ${file(service-configs/iam.yml):IoTRole}
