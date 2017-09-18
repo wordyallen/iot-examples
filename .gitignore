@@ -3,3 +3,4 @@ vars.yml
 .serverless
 dev-server
 yarn-error*
+.env
