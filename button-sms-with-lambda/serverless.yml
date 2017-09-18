@@ -1,0 +1,41 @@
+service: iot-buttons-sns
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  iamRoleStatements:
+    -  Effect: "Allow"
+       Action:
+         - "sns:Publish"
+       Resource: {Ref: ButtonSNSTopic}
+
+plugins:
+  - serverless-webpack
+  - serverless-offline
+
+custom:
+  webpackIncludeModules: true
+  stage: ${opt:stage, self:provider.stage}
+  vars: ${file(service-configs/vars.yml)}
+
+functions:
+  hello:
+    handler: index.hello
+    environment:
+      SNS_TOPIC_ARN: {Ref: ButtonSNSTopic}
+    events:
+      - iot:
+          sql: SELECT * FROM 'iotbutton/${self:custom.vars.ButtonDSN}'
+
+resources:
+  Resources:
+    # IoT
+    Button: ${file(service-configs/iot.yml):Button}
+    ButtonAttachment: ${file(service-configs/iot.yml):ButtonAttachment}
+
+    ButtonPolicy: ${file(service-configs/iot.yml):ButtonPolicy}
+    ButtonPolicyAttachment: ${file(service-configs/iot.yml):ButtonPolicyAttachment}
+
+    # ButtonTopicRule: ${file(service-configs/iot.yml):ButtonTopicRule}
+    ButtonSNSTopic: ${file(service-configs/sns.yml):ButtonSNSTopic}
+    ButtonSNSTopicRole: ${file(service-configs/sns.yml):ButtonSNSTopicRole}

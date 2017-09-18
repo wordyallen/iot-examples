@@ -1,0 +1,14 @@
+{
+    "plugins": [
+        "transform-runtime",
+        "transform-class-properties"
+    ],
+    "presets": [
+        ["env", {
+          "target": { "node": "6.10" },
+          "loose": true,
+          "useBuiltIns": true
+        }]
+      ]
+
+}

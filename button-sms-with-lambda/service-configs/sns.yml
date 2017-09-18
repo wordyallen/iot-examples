@@ -1,0 +1,9 @@
+ButtonSNSTopic:
+  Type: AWS::SNS::Topic
+  Properties:
+    DisplayName: Joe's Button
+    Subscription:
+    - Endpoint: ${self:custom.vars.PhoneNumber}
+      Protocol: sms
+    #var
+    TopicName: SNSButtonSMS

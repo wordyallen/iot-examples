@@ -1,0 +1,5 @@
+node_modules
+vars.yml
+.serverless
+dev-server
+yarn-error*
