@@ -2,6 +2,7 @@ Button:
   Type: AWS::IoT::Thing
   Properties:
     ThingName: iotbutton_${self:custom.vars.ButtonDSN}
+
 ButtonAttachment:
   Type: AWS::IoT::ThingPrincipalAttachment
   Properties:
@@ -26,7 +27,7 @@ ButtonPolicy:
             - ":"
             - Ref: AWS::AccountId
             - :topic/iotbutton/${self:custom.vars.ButtonDSN}
-
+            
 ButtonPolicyAttachment:
   Type: AWS::IoT::PolicyPrincipalAttachment
   Properties:

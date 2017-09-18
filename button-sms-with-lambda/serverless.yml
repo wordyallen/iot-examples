@@ -32,10 +32,7 @@ resources:
     # IoT
     Button: ${file(service-configs/iot.yml):Button}
     ButtonAttachment: ${file(service-configs/iot.yml):ButtonAttachment}
-
     ButtonPolicy: ${file(service-configs/iot.yml):ButtonPolicy}
     ButtonPolicyAttachment: ${file(service-configs/iot.yml):ButtonPolicyAttachment}
-
-    # ButtonTopicRule: ${file(service-configs/iot.yml):ButtonTopicRule}
+    #SNS
     ButtonSNSTopic: ${file(service-configs/sns.yml):ButtonSNSTopic}
-    ButtonSNSTopicRole: ${file(service-configs/sns.yml):ButtonSNSTopicRole}
